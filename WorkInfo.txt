@@ -1,0 +1,8 @@
+timeline width: 469px
+
+Slide002 : 1491661875665- 2.216 seconds
+Slide003 : 1491661877882- 1.382 seconds
+Slide004 : 1491661879266- 1.203 seconds
+Slide005 : 1491661880471- 2.2 seconds
+Slide006 : 1491661882672- 1.775 seconds
+Slide001 : 1491661884449- 1.031 seconds

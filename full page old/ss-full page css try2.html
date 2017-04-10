@@ -1,0 +1,620 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+
+        body {
+            padding-top: 2%;
+        }
+
+        div {
+            border: solid #675a76 2px;
+            /*width: 550px;*/
+            padding: 10px;
+            text-align: center;
+        }
+
+        textarea {
+            background-color: #ccc;
+        }
+
+        #parentdiv {
+            border: 5px solid green;
+            position: relative;
+            width: 100%;
+            height: 400%;
+            max-width: 1300px;
+            display: flex;
+            margin-left: 0;
+        }
+
+        #containerdiv1 {
+
+            width: 40%;
+            padding: 10px 10px 10px 10px;
+            margin-bottom: 60px;
+            border-radius: 5%;
+        }
+
+        #containerdiv2 {
+            width: 50%;
+            margin-left: 10%;
+            border-radius: 5%;
+            /*display:none;*/
+
+        }
+
+        #imgdiv {
+            width: 100%;
+            padding: 4px 3px 4px 3px;
+            background-color: lightsalmon;
+
+        }
+
+        #timelinediv {
+            padding: 0px;
+            height: 5%;
+            background-color: limegreen;
+
+        }
+
+        #controlsdiv {
+            margin-top: 5px;
+            height: 10%;
+            margin-bottom: 25px;
+            background-color: lightskyblue;
+            border-radius: 15px;
+
+        }
+
+        #sectext {
+            width: 15%;
+            height: 60%;
+
+        }
+
+        #mxtetx {
+            width: 15%;
+            height: 60%;
+        }
+
+        #infodiv {
+            padding: 0;
+            border: none;
+        }
+
+        #infotexts {
+            text-align: start;
+            border: none;
+            width: 25%;
+        }
+
+        #infotexts1 {
+            padding: 9px 0 0 0;
+            border: none;
+            border-right: 2px solid darkorange;
+            border-radius: 5px;
+        }
+
+        #infotexts2 {
+            padding: 9px 0 0 0;
+            border: none;
+            border-left: 2px solid darkorange;
+            border-radius: 5px;
+        }
+
+        #bardiv {
+
+        }
+
+        #slideinfodiv {
+
+        }
+
+        .timeline {
+            height: 15px;
+            width: 100%;
+            padding: 5px 2px 0px 2px;
+            margin: 0 auto;
+        }
+
+        .clear {
+            padding: 5px;
+            margin-top: 0px;
+        }
+
+        .controls {
+            margin: auto;
+        }
+
+        .info-texts {
+            height: 20px;
+            margin-bottom: 9px;
+            width: 90%;
+            display: inline-block;
+            text-align: start;
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!--<form id="form1" name="form1" method="GET" action="">-->
+<!--<input type="button" id="prev" value="PREVIOUS" onclick="prevSlide()"/>-->
+<!--<input type="text" id="current" name="slide" value=""/>-->
+<!--<input type="button" value="NEXT" onclick="nextSlide()"/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp-->
+<!--Press to go <input type="button" id="toggle_button" value="AUTO" onclick=" auto()"/> mode.-->
+<!--<input type="text" style="width: 20px;" id="runtime" name="time"  value="3">s-->
+<!--</form>-->
+
+<div id="parentdiv" class="container">
+
+    <div id="containerdiv1">
+
+        <div id="imgdiv">
+            <p id="slidetag"></p>
+        </div>
+
+        <div id="timelinediv">
+
+            <p id="timelineimg"></p>
+
+        </div>
+
+        <div id="controlsdiv">
+            <input type="image" class="controls btn btn-success btn-xs" id="play_button" value="ON" onclick=" auto()"
+                   src="images/Play.png"/>
+            <input type="image" class="controls btn btn-warning btn-xs disabled" id="pause_button" value="OFF"
+                   onclick=" auto()" src="images/Pause.png"/>
+            <input type="image" class="controls btn btn-danger btn-xs" id="stop_button" value="STOP"
+                   onclick="stopButton()" src="images/Stop.png"/>
+            <input type="image" class="controls btn btn-primary btn-xs" id="step_button" value="NEXT"
+                   onclick=" nextSlide(this.id)" src="images/StepForward.png"/>&nbsp;&nbsp;&nbsp;&nbsp;
+            mx:<input type="text" disabled="disabled" id="mxtetx" value=""> &nbsp;&nbsp;&nbsp;
+            sec:<input type="text" disabled="disabled" id="sectext" value="">
+        </div>
+
+        <textarea id="TimeLineInfos" class="form-control" name="TimeLineInfos" rows="4" cols="50"></textarea>
+        <input type="button" class="clear" id="clear" value="CLEAR" onclick="clrTextArea()"/>
+
+
+    </div>
+
+    <div id="containerdiv2">
+        <div id="infodiv" class="row">
+
+            <div id="infotexts" class="col-xs-4">
+                <p>Capture Date Time:</p>
+                <p>Current Date Time:</p>
+                <p>Duration:</p>
+                <p>Total slides:</p>
+                <p>Slide name:</p>
+                <p>Slide entry time:</p>
+                <p>Slide duration:</p>
+                <p>Slide exit time:</p>
+                <p>Loop:</p>
+                <p>Timeline(sec):</p>
+                <p>t...OUT(msec):</p>
+                <p>...OUT(px):</p>
+            </div>
+
+            <div id="infotexts1" class="col-xs-4">
+
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="currentDateTime" disabled="disabled" value="">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="slidename" disabled="disabled" value="Slide001">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+
+            </div>
+
+            <div id="infotexts2" class="col-xs-4">
+
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="currentDateTime2" disabled="disabled" value="">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+                <input type="text" class="form-control info-texts" id="cdt" disabled="disabled" value="0">
+
+
+            </div>
+
+        </div>
+
+        <div id="slideinfodiv">
+
+            <p id="timeimga"></p>
+            <p id="timeimgb"></p>
+
+        </div>
+
+        <div id="bardiv">
+
+
+            ----------------------------</br>
+            Slide001 : 1491404324962</br>
+            Slide002 : 1491404325993,</br>
+            Slide003 : 1491404328209,</br>
+            Slide004 : 1491404329591,</br>
+            Slide005 : 1491404330794,</br>
+            Slide006 : 1491404332994,</br>
+            END      : 1491404334769</br>
+            ----------------------------</br>
+
+            <!--<textarea id="TimeLineInfos" class="form-control" name="TimeLineInfos" rows="4" cols="50"></textarea>-->
+            <!--<input type="button" class="clear" id="clear" value="CLEAR" onclick="clrTextArea()"/>-->
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    //Variable and array declaration
+    var l = 0;
+    var image;
+    var imagea;
+    var imageb;
+    var firsttime = 0;
+    var totaltime =0;
+    var slide = {};
+//    var newtimearr = [];
+    var timearr = [1000, 2000, 1000, 2000, 3000, 1000];
+    var newtimearr = [1491404324962,1491404325993,1491404328209,1491404329591,1491404330794,1491404332994,1491404334769];
+    var timer = 0;
+    var currentSlide = 1;
+    var i = 0;
+    var j = 0;
+    var play_state = document.getElementById("play_button");
+    var pause_state = document.getElementById("pause_button");
+    changeTimes();
+
+    //Slide object creation loop
+
+    for (i = 0; i < 6; i++) {
+
+        slide[i] = new Image();
+        slide[i].src = 'slides/Slide00' + (i + 1) + '.jpg';
+        slide[i].className = "img-responsive center-block";
+        slide[i].name = 'Slide00' + (i + 1);
+
+    }
+
+    //Timeline image creation
+
+    //    var image = new Image();
+    //    image.src = 'images/kafe-poll.gif';
+    //    image.className= "img-responsive timeline";
+    //    document.getElementById('timelineimg').appendChild(image);
+    createTimeImg(image, 'images/kafe-poll.gif', 'timelineimg');
+    createTimeImg(imagea, 'images/poll.gif', 'timeimga');
+    createTimeImg(imagea, 'images/black-poll.gif', 'timeimgb');
+
+    //Other 2 image creation
+
+    //    var imagea = new Image();
+    //    var imageb = new Image();
+    //    imagea.src = 'images/poll.gif';
+    //    imageb.src = 'images/black-poll.gif';
+    //    imagea.className= "img-responsive timeline";
+    //    imageb.className= "img-responsive timeline";
+    //    document.getElementById('').appendChild(imagea);
+    //    document.getElementById('').appendChild(imageb);
+
+    //Initialization
+
+    prependChild(slide[0]);
+    document.getElementById('slidetag').style.display = "inline";
+    document.getElementById('slidename').value = slide[0].name;
+    document.getElementById('TimeLineInfos').value = slide[0].name + ' : ' + TimeEst(1) + '\n';
+    document.getElementById('currentDateTime').value = TimeEst(1);
+    document.getElementById('currentDateTime2').value = TimeEst(2);
+
+    //Object Creation (old)
+
+    //    alert(slidearr[0]);
+    //     var slide1  = new Image();
+    //    slide1.src = 'slides/Slide00'+1+'.jpg';
+    //    slide1.className = "img-responsive center-block";
+    //    var slide2 = new Image();
+    //    slide2.src = 'slides/Slide002.jpg';
+    //    var slide3 = new Image();
+    //    slide3.src = 'slides/Slide003.jpg';
+    //    var slide4 = new Image();
+    //    slide4.src = 'slides/Slide004.jpg';
+    //    var slide5 = new Image();
+    //    slide5.src = 'slides/Slide005.jpg';
+    //    var slide6 = new Image();
+    //    slide6.src = 'slides/Slide006.jpg';
+    //    prependChild(slide1);
+
+    //Function called when toggle button is pressed.
+
+    function auto() {
+
+
+        if (play_state.value == "ON") {
+
+            disableButton(play_state);
+            enableButton(pause_state);
+
+            var i = 0;
+            (function repeat() {
+                nextSlide();
+                var time = timearr[currentSlide-1];
+                timer = setTimeout(repeat, time);
+                i++;
+                if (i == 6) {
+                    i = 0;
+                }
+                //alert(i);
+            })();
+
+        } else {
+            enableButton(play_state);
+            disableButton(pause_state);
+            clearTimeout(timer);
+
+        }
+
+    }
+
+    //Function for stop button
+
+    function stopButton() {
+
+    }
+
+    //Function to enable button(graphic & use)
+
+    function disableButton(ident) {
+        ident.value = "OFF";
+        ident.classList.add("disabled");
+        ident.disabled = true;
+    }
+
+    //Function to disable button(graphic & use)
+
+    function enableButton(ident) {
+        ident.value = "ON";
+        ident.classList.remove("disabled");
+        ident.disabled = false;
+    }
+
+    //Function called to proceed to the next slide
+
+    function nextSlide(id) {
+
+        var t = TimeEst(1);
+        var p = TimeEst(2);
+
+        //Change times based on step
+//        if (id == "step_button") {
+//            changeTimes(t,firsttime);
+//        } else {
+//            j = 0;
+//        }
+//        firsttime = t;
+        var parent = document.getElementById('slidetag');
+        currentSlide += 1;
+        var k = currentSlide - 1;
+        switch (currentSlide) {
+
+            case 1:
+
+                prependChild(slide[k]);
+                //document.getElementById('prev').disabled = true;
+                break;
+
+            case 2:
+
+                parent.removeChild(slide[k - 1]);
+                prependChild(slide[k]);
+                //document.getElementById('prev').disabled = false;
+                break;
+
+            case 3:
+
+                parent.removeChild(slide[k - 1]);
+                prependChild(slide[k]);
+                break;
+
+            case 4:
+
+                parent.removeChild(slide[k - 1]);
+                prependChild(slide[k]);
+                break;
+
+            case 5:
+
+                parent.removeChild(slide[k - 1]);
+                prependChild(slide[k]);
+                break;
+
+            case 6:
+
+                parent.removeChild(slide[k - 1]);
+                prependChild(slide[k]);
+                break;
+
+            case 7:
+
+                parent.removeChild(slide[k - 1]);
+                currentSlide = 1;
+                k = currentSlide - 1;
+                //document.getElementById('prev').disabled = true;
+                prependChild(slide[k]);
+                break;
+
+
+        }
+        //var currentID = slide[k].name;
+        document.getElementById('slidename').value = slide[k].name;
+        document.getElementById('currentDateTime').value = t;
+        document.getElementById('currentDateTime2').value = p;
+        if (play_state.value === "OFF") {
+            document.getElementById('TimeLineInfos').value += slide[k].name + ' : ' + t + "- " + (timearr[currentSlide - 1] / 1000) + " seconds" + '\n';
+        } else if (play_state.value === "ON") {
+            document.getElementById('TimeLineInfos').value += slide[k].name + ' : ' + t + '\n';
+        }
+        //
+        //sendTimeLine(currentID,t);
+        //document.form1.submit();
+
+
+    }
+
+
+    //Function to choose slide times based on step mode
+    function changeTimes() {
+//        if (j == 0){
+//            newtimearr[0] = first % 1000000;
+//        }
+//
+//        if (j < 6) {
+//            newtimearr[j+1] = t % 1000000;
+//            //alert(newtimearr[currentSlide]);
+//            j++;
+//        } else {
+            for (var n = 0; n < 6; n++) {
+                //alert(newtimearr[n]);
+                //alert(newtimearr[n + 1]);
+                timearr[n] = newtimearr[n + 1] - newtimearr[n];
+            }
+            alert(timearr);
+//            j = 0;
+//        }
+    }
+    //Function to return to the previous Slide
+
+    function prevSlide() {
+
+        var t = TimeEst();
+        var parent = document.getElementById('slidetag');
+        currentSlide -= 1;
+        var k = currentSlide - 1;
+
+        switch (currentSlide) {
+
+
+            case 1:
+                parent.removeChild(slide[k + 1]);
+                prependChild(slide[k]);
+                // var currentID = 'Slide00' + currentSlide;
+                document.getElementById('prev').disabled = true;
+                break;
+            case 2:
+                parent.removeChild(slide[k + 1]);
+                prependChild(slide[k]);
+                // var currentID = 'Slide00' + currentSlide;
+                break;
+            case 3:
+                parent.removeChild(slide[k + 1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+            case 4:
+                parent.removeChild(slide[k + 1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+            case 5:
+                parent.removeChild(slide[k + 1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+            case 6:
+                parent.removeChild(slide[k + 1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+
+        }
+
+        document.getElementById('current').value = slide[k].name;
+        document.getElementById('TimeLineInfos').value += slide[k].name + ' : ' + t + '\n';
+        //sendTimeLine(currentID,t);
+        //document.form1.submit();
+    }
+
+    //Function to get Time
+
+    function TimeEst(k) {
+
+        var d = new Date();
+        if (k === 1) {
+            var t = d.getTime();
+        } else if (k === 2) {
+            t = d.getDate() + "." + (d.getMonth() + 1) + "." + d.getFullYear() + "." + d.getHours() + "." + d.getMinutes();
+        } else if (k === 3) {
+            t = d.getSeconds();
+        }
+        return t;
+
+
+    }
+
+    //Function to clear the Text Area.
+
+    function clrTextArea() {
+
+        document.getElementById('TimeLineInfos').value = "";
+
+    }
+
+    //Function to append Images as first child in their element.
+
+    function prependChild(newFirstChild) {
+
+        var div = document.getElementById("slidetag");
+        div.insertBefore(newFirstChild, div.firstChild);
+
+    }
+
+    function createSlideObjects() {
+
+    }
+
+    function createTimeImg(name, source, id) {
+
+        var name = new Image();
+        name.src = source;
+        name.className = "img-responsive timeline";
+        document.getElementById(id).appendChild(name);
+
+    }
+
+    function calcTime(){
+        for(i = 0; i<6;i++ ){
+            totaltime += timearr[i];
+        }
+        alert(totaltime);
+    }
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!doctype html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+
+        body {
+            padding-top: 2%;
+        }
+
+        div {
+            border: solid red 1px;
+            width: 550px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        textarea {
+            background-color: #ccc;
+        }
+
+        #parent{
+            border: 5px solid green;
+            position: relative;
+            width:100%;
+            max-width: 1500px;
+            display:flex;
+            margin-left: 0;
+        }
+
+        #container{
+            width:40%;
+        }
+
+        #container2{
+            width:50%;
+            margin-left:10%;
+
+        }
+
+        #imgdiv {
+            width:100%;
+        }
+
+
+        .clear {
+            padding: 5px;
+            margin-top: 0px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<form id="form1" name="form1" method="GET" action="">
+    <input type="button" id="prev" value="PREVIOUS" onclick="prevSlide()"/>
+    <input type="text" id="current" name="slide" value=""/>
+	<input type="button" value="NEXT" onclick="nextSlide()"/> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp
+   Press to go <input type="button" id="toggle_button" value="AUTO" onclick=" auto()"/> mode.
+    <input type="text" style="width: 20px;" id="runtime" name="time"  value="3">s
+</form>
+<div id="parent" class="row">
+    <div id="container" >
+        <div id="imgdiv">
+            <p id="slidetag" ></p>
+        </div>
+        <textarea id="TimeLineInfos" class="form-control" name="TimeLineInfos" rows="4" cols="50"></textarea>
+        <input type="button" class="clear" id="clear" value="CLEAR" onclick="clrTextArea()"/>
+    </div>
+    <div id="container2">
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+    //Variable and array declaration
+
+    var slide ={};
+    var timearr = [1000,2000,1000,2000,3000,1000];
+    var timer=0;
+    var currentSlide = 1;
+    var i = 0;
+
+    //Slide object creation loop
+
+    for (i=0;i<6;i++){
+
+        slide[i] = new Image();
+        slide[i].src = 'slides/Slide00'+(i+1)+'.jpg';
+        slide[i].className = "img-responsive center-block";
+        slide[i].name = 'Slide00' + (i+1);
+
+    }
+
+
+    prependChild(slide[0]);
+    document.getElementById('slidetag').style.display = "inline";
+    document.getElementById('current').value = slide[0].name;
+    document.getElementById('TimeLineInfos').value = slide[0].name + ' : ' + TimeEst() + '\n';
+    document.getElementById('prev').disabled = true;
+
+
+
+
+    //Object Creation (old)
+
+    //    alert(slidearr[0]);
+    //     var slide1  = new Image();
+    //    slide1.src = 'slides/Slide00'+1+'.jpg';
+    //    slide1.className = "img-responsive center-block";
+    //    var slide2 = new Image();
+    //    slide2.src = 'slides/Slide002.jpg';
+    //    var slide3 = new Image();
+    //    slide3.src = 'slides/Slide003.jpg';
+    //    var slide4 = new Image();
+    //    slide4.src = 'slides/Slide004.jpg';
+    //    var slide5 = new Image();
+    //    slide5.src = 'slides/Slide005.jpg';
+    //    var slide6 = new Image();
+    //    slide6.src = 'slides/Slide006.jpg';
+    //    prependChild(slide1);
+
+
+
+
+
+
+    //Function called when toggle button is pressed.
+
+    function auto() {
+
+        var state = document.getElementById("toggle_button");
+        if (state.value === "AUTO") {
+
+            state.value = "STEP";
+
+            var i = 0;
+            (function repeat(){
+                nextSlide();
+                var time = timearr[i];
+                timer = setTimeout(repeat,time);
+                i++;
+                if(i === 6){
+                    i=0;
+                }
+            })();
+
+        } else {
+
+            state.value = "AUTO";
+            clearTimeout(timer);
+
+        }
+
+    }
+
+    //Function called to proceed to the next slide
+
+    function nextSlide() {
+
+        var t = TimeEst();
+        var parent = document.getElementById('slidetag');
+        currentSlide += 1;
+        var k = currentSlide-1;
+        switch (currentSlide) {
+
+            case 1:
+
+                prependChild(slide[k]);
+                document.getElementById('prev').disabled = true;
+                break;
+
+            case 2:
+
+                parent.removeChild(slide[k-1]);
+                prependChild(slide[k]);
+                document.getElementById('prev').disabled = false;
+                break;
+
+            case 3:
+
+                parent.removeChild(slide[k-1]);
+                prependChild(slide[k]);
+                break;
+
+            case 4:
+
+                parent.removeChild(slide[k-1]);
+                prependChild(slide[k]);
+                break;
+
+            case 5:
+
+                parent.removeChild(slide[k-1]);
+                prependChild(slide[k]);
+                break;
+
+            case 6:
+
+                parent.removeChild(slide[k-1]);
+                prependChild(slide[k]);
+                break;
+
+            case 7:
+                parent.removeChild(slide[k-1]);
+                currentSlide = 1;
+                k = currentSlide-1;
+                document.getElementById('prev').disabled = true;
+                prependChild(slide[k]);
+                break;
+
+
+        }
+        var currentID = slide[k].name;
+        document.getElementById('current').value = slide[k].name;
+        document.getElementById('TimeLineInfos').value += slide[k].name + ' : ' + t + "- " + (timearr[currentSlide-1]/1000) + " seconds" + '\n';
+        //sendTimeLine(currentID,t);
+        //document.form1.submit();
+
+    }
+
+    //Function to return to the previous Slide
+
+    function prevSlide() {
+
+        var t = TimeEst();
+        var parent = document.getElementById('slidetag');
+        currentSlide -= 1;
+        var k = currentSlide - 1;
+
+        switch (currentSlide) {
+
+
+            case 1:
+                parent.removeChild(slide[k+1]);
+                prependChild(slide[k]);
+               // var currentID = 'Slide00' + currentSlide;
+                document.getElementById('prev').disabled = true;
+                break;
+            case 2:
+                parent.removeChild(slide[k+1]);
+                prependChild(slide[k]);
+               // var currentID = 'Slide00' + currentSlide;
+                break;
+            case 3:
+                parent.removeChild(slide[k+1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+            case 4:
+                parent.removeChild(slide[k+1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+            case 5:
+                parent.removeChild(slide[k+1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+            case 6:
+                parent.removeChild(slide[k+1]);
+                prependChild(slide[k]);
+                //var currentID = 'Slide00' + currentSlide;
+                break;
+
+        }
+
+        document.getElementById('current').value = slide[k].name;
+        document.getElementById('TimeLineInfos').value += slide[k].name + ' : ' + t + '\n';
+        //sendTimeLine(currentID,t);
+        //document.form1.submit();
+    }
+
+    //Function to get Time
+
+    function TimeEst() {
+
+        var d = new Date();
+        var t = d.getTime();// + "." + d.getMilliseconds();
+        return t;
+
+    }
+
+    //Function to clear the Text Area.
+
+    function clrTextArea() {
+
+        document.getElementById('TimeLineInfos').value = "";
+
+    }
+
+    //Function to append Images as first child in their element.
+
+    function prependChild(newFirstChild) {
+
+        var div = document.getElementById("slidetag");
+        div.insertBefore(newFirstChild, div.firstChild);
+
+    }
+
+
+</script>
+</body>
+</html>
